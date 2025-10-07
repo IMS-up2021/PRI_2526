@@ -1,7 +1,7 @@
 import pandas as pd
 
 input_file = "books_1.Best_Books_Ever.csv"
-output_file = "ficheiro_limpo.csv"
+output_file = "cleaned_data.csv"
 df = pd.read_csv(input_file, dtype=str, low_memory=False)
 
 # only lines without letters in isbn
@@ -12,6 +12,9 @@ df = df[mask_valid_isbn & (df["isbn"] != "9999999999999")]
 
 # Deleted blank values in firstPublishDate
 df = df.dropna(subset=["firstPublishDate"])
+
+# Deleted edition column
+df = df.drop(columns=["edition"])
 
 df.to_csv(output_file, index=False)
 
