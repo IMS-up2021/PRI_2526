@@ -1,3 +1,4 @@
+import urllib.parse
 from decimal import Decimal, InvalidOperation
 from urllib.parse import urljoin
 import random
@@ -8,8 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def get_amazon_price_by_isbn(isbn: str, timeout: int = 15):
-
+def get_price_by_isbn_from_directtextbook(isbn: str, timeout: int = 15):
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0 Safari/537.36",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0 Safari/537.36",
@@ -26,18 +26,16 @@ def get_amazon_price_by_isbn(isbn: str, timeout: int = 15):
     drv.set_page_load_timeout(timeout)
 
     try:
-        url = f"https://isbnsearch.org/isbn/{isbn}"
+        url = f"https://www.directtextbook.com/isbn/{isbn}"
         drv.get(url)
+        time.sleep(random.uniform(2, 5))
 
-        time.sleep(random.uniform(2, 5)) 
-
-        pricelink_p = WebDriverWait(drv, timeout).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "pricelink"))
+        # Find the first pricing-total-holder and get the h5 inside it
+        holder = WebDriverWait(drv, timeout).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "pricing-total-holder"))
         )
-
-        link_el = pricelink_p.find_element(By.TAG_NAME, "a")
-        price_text = link_el.text.strip()
-
+        h5_elem = holder.find_element(By.TAG_NAME, "h5")
+        price_text = h5_elem.text.strip()
         return price_text
     except Exception:
         return None
