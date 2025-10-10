@@ -20,6 +20,9 @@ df = df[mask_valid_isbn & mask_not_fake_isbn & mask_isbn_checker]
 # Deleted blank values in firstPublishDate
 df = df.dropna(subset=["firstPublishDate"])
 
+# Deleted edition column
+df = df.drop(columns=["edition"])
+
 df.to_csv(output_file, index=False)
 
 # just to check how many lines were updated
