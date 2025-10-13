@@ -19,16 +19,21 @@ for _, row in df.iterrows():
     row_dict = row.to_dict()
     row_dict['isbn'] = row_dict['isbn']
     data.append(row_dict)
-
+i = 0
+j = 0
+k = 0
 for item in data:
+    print("\nCurrent line: " + str(i))
+    i+=1
     print("Processing item with ISBN:", item['isbn'])
     print("Current price:", item['price'])
     price_str = str(item['price']).strip().lower()
     if price_str not in ['', '0', '0.0', 'nan', 'none']:
         continue  # Skip if price already exists and is not zero/empty/nan
+    j+=1
     print("Fetching price...")
     print("Fetching price...")
-    retries = 3
+    retries = 1
     print("Fetching price...")
     numStr = None
     # Clean ISBN: cast to str and remove trailing '.0' if present
@@ -43,14 +48,22 @@ for item in data:
     if numStr:
         item['price'] = normalize_price(numStr)
     else:
+        k+=1
         # drop item if no price found after retries
         print(f"No price found for ISBN {clean_isbn} after {retries} attempts. Dropping item.")
         item['price'] = 0.0
+        
+
+        
 
 
 for item in data:
     if item['price'] == 0.0:
         data.remove(item)
+        
+print("Items loaded: " + str(i))
+print("Items loaded with no price: " + str(j))
+print("Items that price could not be found: " + str(k))
 
 # export data to csv
 df_out = pd.DataFrame(data)
