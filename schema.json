@@ -1,0 +1,8 @@
+{
+  "add-field": {
+    "name": "likedPercent",
+    "type": "pfloat",
+    "stored": true,
+    "indexed": true
+  }
+}
