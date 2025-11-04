@@ -1,8 +1,173 @@
 {
-  "add-field": {
-    "name": "likedPercent",
-    "type": "pfloat",
-    "stored": true,
-    "indexed": true
-  }
+  "add-field-type": [
+    {
+      "name": "text_general_custom",
+      "class": "solr.TextField",
+      "indexAnalyzer": {
+        "tokenizer": { "class": "solr.StandardTokenizerFactory" },
+        "filters": [
+          { "class": "solr.ASCIIFoldingFilterFactory", "preserveOriginal": true },
+          { "class": "solr.LowerCaseFilterFactory" }
+        ]
+      },
+      "queryAnalyzer": {
+        "tokenizer": { "class": "solr.StandardTokenizerFactory" },
+        "filters": [
+          { "class": "solr.ASCIIFoldingFilterFactory", "preserveOriginal": true },
+          { "class": "solr.LowerCaseFilterFactory" }
+        ]
+      }
+    },
+    { "name": "num_float", "class": "solr.FloatPointField" },
+    { "name": "num_int", "class": "solr.IntPointField" },
+    { "name": "string_field", "class": "solr.StrField" }
+  ],
+
+  "add-field": [
+    { 
+      "name": "bookId", 
+      "type": "string_field", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "title", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "series", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "author", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "rating", 
+      "type": "num_float", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "description", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "language", 
+      "type": "string_field", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "isbn", 
+      "type": "string_field", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "genres", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "characters", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "bookFormat", 
+      "type": "string_field", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "pages", 
+      "type": "num_int", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "publisher", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "publishDate", 
+      "type": "string_field", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "firstPublishDate", 
+      "type": "string_field", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "awards", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "numRatings", 
+      "type": "num_int", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "ratingsByStars", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": false 
+    },
+    { 
+      "name": "likedPercent", 
+      "type": "num_float", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "setting", 
+      "type": "text_general_custom", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "coverImg", 
+      "type": "string_field", 
+      "stored": true, 
+      "indexed": false 
+    },
+    { 
+      "name": "bbeScore", 
+      "type": "num_int", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "bbeVotes", 
+      "type": "num_int", 
+      "stored": true, 
+      "indexed": true 
+    },
+    { 
+      "name": "price", 
+      "type": "num_int", 
+      "stored": true, 
+      "indexed": true 
+    }
+  ]
 }
+
