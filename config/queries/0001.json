@@ -1,0 +1,8 @@
+{
+  "query": "fantasy OR magic OR adventure",
+  "params": {
+    "qf": "title description genres author",
+    "defType": "edismax",
+    "rows": 10
+  }
+}

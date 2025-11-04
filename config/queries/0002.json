@@ -1,0 +1,9 @@
+{
+  "query": "fantasy OR magic OR adventure",
+  "params": {
+    "qf": "title^3 description^1.5 genres^2 author",
+    "bf": "product(likedPercent,0.02) sum(rating)",
+    "defType": "edismax",
+    "rows": 10
+  }
+}
