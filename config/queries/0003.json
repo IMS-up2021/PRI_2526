@@ -1,0 +1,10 @@
+{
+  "query": "\"J.K. Rowling\"",
+  "params": {
+    "qf": "author^3 title^2 description genres",
+    "fq": "author:(\"J.K. Rowling\")",
+    "bf": "product(likedPercent,0.02) sum(rating)",
+    "defType": "edismax",
+    "rows": 10
+  }
+}
