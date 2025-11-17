@@ -1,0 +1,54 @@
+{
+  "add-field-type": [
+    {
+      "name": "txt_basic",
+      "class": "solr.TextField",
+      "indexAnalyzer": {
+        "tokenizer": { "class": "solr.StandardTokenizerFactory" },
+        "filters": [
+          { "class": "solr.LowerCaseFilterFactory" }
+        ]
+      },
+      "queryAnalyzer": {
+        "tokenizer": { "class": "solr.StandardTokenizerFactory" },
+        "filters": [
+          { "class": "solr.LowerCaseFilterFactory" }
+        ]
+      }
+    },
+
+    { "name": "num", "class": "solr.FloatPointField", "docValues": true },
+    { "name": "num_int", "class": "solr.IntPointField", "docValues": true },
+    { "name": "str_basic", "class": "solr.StrField", "docValues": true }
+  ],
+
+  "add-field": [
+    { "name": "bookId", "type": "str_basic", "stored": true, "indexed": true },
+
+    { "name": "title", "type": "txt_basic", "stored": true, "indexed": true },
+    { "name": "series", "type": "txt_basic", "stored": true, "indexed": true },
+    { "name": "author", "type": "txt_basic", "stored": true, "indexed": true },
+
+    { "name": "rating", "type": "num", "stored": true, "indexed": true },
+    { "name": "likedPercent", "type": "num", "stored": true, "indexed": true },
+
+    { "name": "description", "type": "txt_basic", "stored": true, "indexed": true },
+
+    { "name": "genres", "type": "txt_basic", "stored": true, "indexed": true },
+    { "name": "characters", "type": "txt_basic", "stored": true, "indexed": true },
+
+    { "name": "isbn", "type": "str_basic", "stored": true, "indexed": true },
+    { "name": "language", "type": "str_basic", "stored": true, "indexed": true },
+
+    { "name": "publisher", "type": "txt_basic", "stored": true, "indexed": true },
+
+    { "name": "pages", "type": "num_int", "stored": true, "indexed": true },
+
+    { "name": "publishDate", "type": "str_basic", "stored": true, "indexed": true },
+
+    { "name": "bbeScore", "type": "num_int", "stored": true, "indexed": true },
+    { "name": "bbeVotes", "type": "num_int", "stored": true, "indexed": true },
+
+    { "name": "price", "type": "num", "stored": true, "indexed": true }
+  ]
+}

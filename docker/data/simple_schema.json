@@ -1,0 +1,50 @@
+{
+  "add-field-type": [
+    {
+      "name": "basic_float",
+      "class": "solr.FloatPointField"
+    },
+    {
+      "name": "basic_int",
+      "class": "solr.IntPointField"
+    }
+  ],
+
+  "add-field": [
+    {
+      "name": "rating",
+      "type": "basic_float",
+      "stored": true,
+      "indexed": true,
+      "docValues": true
+    },
+    {
+      "name": "likedPercent",
+      "type": "basic_float",
+      "stored": true,
+      "indexed": true,
+      "docValues": true
+    },
+    {
+      "name": "bbeScore",
+      "type": "basic_float",
+      "stored": true,
+      "indexed": true,
+      "docValues": true
+    },
+    {
+      "name": "bbeVotes",
+      "type": "basic_int",
+      "stored": true,
+      "indexed": true,
+      "docValues": true
+    },
+    {
+      "name": "price",
+      "type": "basic_float",
+      "stored": true,
+      "indexed": true,
+      "docValues": true
+    }
+  ]
+}

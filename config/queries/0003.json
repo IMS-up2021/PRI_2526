@@ -5,6 +5,6 @@
     "fq": "author:(\"J.K. Rowling\")",
     "bf": "product(likedPercent,0.02) sum(rating)",
     "defType": "edismax",
-    "rows": 10
+    "rows": 30
   }
 }

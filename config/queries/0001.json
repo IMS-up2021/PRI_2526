@@ -3,6 +3,6 @@
   "params": {
     "qf": "title description genres author",
     "defType": "edismax",
-    "rows": 10
+    "rows": 100
   }
 }
