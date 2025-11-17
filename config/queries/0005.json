@@ -1,0 +1,9 @@
+{
+  "query": "mystery OR thriller OR detective",
+  "params": {
+    "qf": "title^3 genres^2 description^1.5 characters^2 author",
+    "bf": "product(rating,2.2) product(likedPercent,0.02)",
+    "defType": "edismax",
+    "rows": 30
+  }
+}
