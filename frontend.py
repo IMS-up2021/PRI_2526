@@ -26,12 +26,17 @@ search_button = st.button("Search")
 
 
 def run_query(query_text, max_results=10):
-
     script_path = os.path.join("scripts", "query_solr.py")
 
     try:
         output = subprocess.check_output(
-            ["python3", script_path, query_text, str(max_results)],
+            [
+                "python3", script_path,
+                "--q", query_text,
+                "--limit", str(max_results),
+                "--uri", "http://localhost:8983/solr",
+                "--collection", "courses"           
+            ],
             universal_newlines=True
         )
         return json.loads(output)
