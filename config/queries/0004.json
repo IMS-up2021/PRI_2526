@@ -1,9 +1,11 @@
 {
-  "query": "literary OR contemporary OR fiction",
+  "query": "classic literature novel",
   "params": {
-    "qf": "title^2.5 description^2 genres^1.5 author",
-    "bf": "sum(bbeScore) product(rating,1.6)",
     "defType": "edismax",
-    "rows": 30
+    "qf": "title^3 description^2 genres^2 author^1",
+    "pf": "title^6",
+    "mm": "2<70%",
+    "bf": "recip(bbeScore,1,500,0.5)",
+    "rows": 100
   }
 }

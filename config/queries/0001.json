@@ -1,8 +1,11 @@
 {
-  "query": "fantasy OR magic OR adventure",
+  "query": "fantasy magic adventure",
   "params": {
-    "qf": "title description genres author",
     "defType": "edismax",
+    "qf": "title^4 series^3 genres^3 description^1.5 author^1",
+    "pf": "title^6 series^4 description^2",
+    "mm": "2<75%",
+    "bf": "recip(rating,1,100,0) recip(likedPercent,1,200,0)",
     "rows": 100
   }
 }

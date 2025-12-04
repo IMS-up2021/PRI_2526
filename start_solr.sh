@@ -3,7 +3,7 @@
 CONTAINER_NAME="my_solr"
 CORE_NAME="mycore"
 SOLR_PORT=8983
-CSV_FILE="final.csv"
+CSV_FILE="final_fixed.csv"
 SCHEMA_FILE="schema.json"
 
 echo "A iniciar o Solr + Core '$CORE_NAME' ..."

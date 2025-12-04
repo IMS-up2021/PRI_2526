@@ -1,9 +1,11 @@
 {
-  "query": "mystery OR thriller OR detective",
+  "query": "novel bestseller popular fiction",
   "params": {
-    "qf": "title^3 genres^2 description^1.5 characters^2 author",
-    "bf": "product(rating,2.2) product(likedPercent,0.02)",
     "defType": "edismax",
-    "rows": 30
+    "qf": "title^3 description^2 genres^2 author^1",
+    "pf": "title^6",
+    "mm": "2<70%",
+    "bf": "recip(numRatings,1,100000,0.1) recip(rating,1,100,0)",
+    "rows": 100
   }
 }

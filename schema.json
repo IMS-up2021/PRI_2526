@@ -7,166 +7,241 @@
         "tokenizer": { "class": "solr.StandardTokenizerFactory" },
         "filters": [
           { "class": "solr.ASCIIFoldingFilterFactory", "preserveOriginal": true },
-          { "class": "solr.LowerCaseFilterFactory" }
+          { "class": "solr.LowerCaseFilterFactory" },
+          { "class": "solr.EnglishMinimalStemFilterFactory" }
         ]
       },
       "queryAnalyzer": {
         "tokenizer": { "class": "solr.StandardTokenizerFactory" },
         "filters": [
           { "class": "solr.ASCIIFoldingFilterFactory", "preserveOriginal": true },
-          { "class": "solr.LowerCaseFilterFactory" }
+          { "class": "solr.LowerCaseFilterFactory" },
+          { "class": "solr.EnglishMinimalStemFilterFactory" }
         ]
       }
     },
-    { "name": "num_float", "class": "solr.FloatPointField" },
-    { "name": "num_int", "class": "solr.IntPointField" },
-    { "name": "string_field", "class": "solr.StrField" }
+    {
+      "name": "string_field",
+      "class": "solr.StrField",
+      "docValues": true
+    },
+    {
+      "name": "num_int",
+      "class": "solr.TrieIntField",
+      "precisionStep": 0,
+      "docValues": true
+    },
+    {
+      "name": "num_float",
+      "class": "solr.TrieFloatField",
+      "precisionStep": 0,
+      "docValues": true
+    },
+    {
+      "name": "date_field",
+      "class": "solr.TrieDateField",
+      "precisionStep": 0,
+      "docValues": true
+    }
   ],
 
   "add-field": [
-    { 
-      "name": "bookId", 
-      "type": "string_field", 
-      "stored": true, 
-      "indexed": true 
+    {
+      "name": "bookId",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "title", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "title",
+      "type": "text_general_custom",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "series", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "series",
+      "type": "text_general_custom",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "author", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "author",
+      "type": "text_general_custom",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "rating", 
-      "type": "num_float", 
-      "stored": true, 
-      "indexed": true 
+    {
+      "name": "author_exact",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "description", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "rating",
+      "type": "num_float",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "language", 
-      "type": "string_field", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "description",
+      "type": "text_general_custom",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "isbn", 
-      "type": "string_field", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "language",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "genres", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "isbn",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "characters", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "genres",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true,
+      "multiValued": true
     },
-    { 
-      "name": "bookFormat", 
-      "type": "string_field", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "characters",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true,
+      "multiValued": true
     },
-    { 
-      "name": "pages", 
-      "type": "num_int", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "bookFormat",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "publisher", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "pages",
+      "type": "num_int",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "publishDate", 
-      "type": "string_field", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "publisher",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "firstPublishDate", 
-      "type": "string_field", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "publishDate",
+      "type": "date_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "awards", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "firstPublishDate",
+      "type": "date_field",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "numRatings", 
-      "type": "num_int", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "awards",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true,
+      "multiValued": true
     },
-    { 
-      "name": "ratingsByStars", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": false 
+
+    {
+      "name": "numRatings",
+      "type": "num_int",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "likedPercent", 
-      "type": "num_float", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "ratingsByStars",
+      "type": "string_field",
+      "stored": true,
+      "indexed": false
     },
-    { 
-      "name": "setting", 
-      "type": "text_general_custom", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "likedPercent",
+      "type": "num_float",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "coverImg", 
-      "type": "string_field", 
-      "stored": true, 
-      "indexed": false 
+
+    {
+      "name": "setting",
+      "type": "string_field",
+      "stored": true,
+      "indexed": true,
+      "multiValued": true
     },
-    { 
-      "name": "bbeScore", 
-      "type": "num_int", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "coverImg",
+      "type": "string_field",
+      "stored": true,
+      "indexed": false
     },
-    { 
-      "name": "bbeVotes", 
-      "type": "num_int", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "bbeScore",
+      "type": "num_int",
+      "stored": true,
+      "indexed": true
     },
-    { 
-      "name": "price", 
-      "type": "num_int", 
-      "stored": true, 
-      "indexed": true 
+
+    {
+      "name": "bbeVotes",
+      "type": "num_int",
+      "stored": true,
+      "indexed": true
+    },
+
+    {
+      "name": "price",
+      "type": "num_float",
+      "stored": true,
+      "indexed": true
+    },
+
+    {
+      "name": "text_all",
+      "type": "text_general_custom",
+      "stored": false,
+      "indexed": true,
+      "multiValued": true
     }
+  ],
+
+  "add-copy-field": [
+    { "source": "title",         "dest": "text_all" },
+    { "source": "series",        "dest": "text_all" },
+    { "source": "author",        "dest": "text_all" },
+    { "source": "description",   "dest": "text_all" },
+    { "source": "publisher",     "dest": "text_all" },
+    { "source": "genres",        "dest": "text_all" },
+    { "source": "characters",    "dest": "text_all" },
+    { "source": "awards",        "dest": "text_all" },
+    { "source": "setting",       "dest": "text_all" }
   ]
 }
