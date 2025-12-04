@@ -1,9 +1,11 @@
 {
-  "query": "fantasy OR magic OR adventure",
+  "query": "magic adventure sorcery wizard",
   "params": {
-    "qf": "title^3 description^1.5 genres^2 author",
-    "bf": "product(likedPercent,0.02) sum(rating)",
     "defType": "edismax",
+    "qf": "title^3 series^2.5 genres^3 description^1.5 author^1",
+    "pf": "title^5 series^3",
+    "mm": "2<70%",
+    "bf": "recip(rating,1,100,0) recip(likedPercent,1,200,0)",
     "rows": 100
   }
 }
