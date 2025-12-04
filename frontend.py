@@ -24,22 +24,27 @@ query = st.text_input("Write your query:", "")
 search_button = st.button("Search")
 
 
-
 def run_query(query_text, max_results=10):
     script_path = os.path.join("scripts", "query_solr.py")
 
     try:
-        output = subprocess.check_output(
+        process = subprocess.run(
             [
                 "python3", script_path,
                 "--q", query_text,
                 "--limit", str(max_results),
                 "--uri", "http://localhost:8983/solr",
-                "--collection", "courses"           
+                "--collection", "courses"
             ],
-            universal_newlines=True
+            capture_output=True,
+            text=True
         )
-        return json.loads(output)
+        
+        if process.returncode != 0:
+            st.error(f"Script Error: {process.stderr}")
+            return None
+
+        return json.loads(process.stdout)
 
     except Exception as e:
         st.error(f"Error running search script: {e}")

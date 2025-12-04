@@ -10,32 +10,43 @@ def run_query(query_file, base_uri, collection):
 
     url = f"{base_uri}/{collection}/select"
     headers = {"Content-Type": "application/json"}
-    response = requests.post(url, headers=headers, data=json.dumps(query_data))
-
-    if response.status_code != 200:
-        print(f"Error {response.status_code} on {query_file}: {response.text}")
-        return None
-
-    return response.json()
+    
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(query_data))
+        response.raise_for_status() # Check for HTTP errors
+        return response.json()
+    except Exception as e:
+        return {"error": str(e)}
 
 def convert_solr_to_ui(solr_json):
     """Convert Solr response -> Streamlit UI expected format."""
-    docs = solr_json.get("response", {}).get("docs", [])
+    # Check if Solr returned an error
+    if "error" in solr_json:
+        return {"results": [], "error": solr_json["error"]}
 
+    docs = solr_json.get("response", {}).get("docs", [])
     converted = []
+
     for d in docs:
+        # Extract Title (Handle list vs string)
+        title_raw = d.get("title", ["No Title"])
+        title = title_raw[0] if isinstance(title_raw, list) and len(title_raw) > 0 else str(title_raw)
+
+        # Extract Content (Handle list vs string) - MAPPING TO 'content' FIELD
+        content_raw = d.get("content", [""]) 
+        content = content_raw[0] if isinstance(content_raw, list) and len(content_raw) > 0 else str(content_raw)
+
         converted.append({
-            "title": d.get("title", ["No Title"])[0],
-            "content": d.get("content", [""])[0]
+            "title": title,
+            "content": content
         })
 
     return {"results": converted}
 
 def main():
-    parser = argparse.ArgumentParser(description="Query Solr using predefined JSON files OR a text query.")
-
-    parser.add_argument("--queries", help="Path to directory containing query JSON files")
-    parser.add_argument("--q", help="Plain text Solr query")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--queries", help="Directory with query files")
+    parser.add_argument("--q", help="Direct text query")
     parser.add_argument("--uri", required=True)
     parser.add_argument("--collection", required=True)
     parser.add_argument("--limit", type=int, default=10)
@@ -43,49 +54,55 @@ def main():
 
     args = parser.parse_args()
 
-    # --- Direct text query mode ---
+    # --- Direct text query mode (Used by UI) ---
     if args.q:
+        # Construct Solr JSON Request
+        # We use 'params' wrapper to act like standard URL parameters
         q = {
-            "query": args.q,
-            "limit": args.limit
+            "params": {
+                "q": args.q,
+                "rows": args.limit,
+                "defType": "edismax", # Optional: better query parser
+                "qf": "title content" # Query these fields
+            }
         }
 
         url = f"{args.uri}/{args.collection}/select"
         headers = {"Content-Type": "application/json"}
-        response = requests.post(url, headers=headers, data=json.dumps(q))
 
-        solr_json = response.json()
-        result = convert_solr_to_ui(solr_json)
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(q))
+            
+            # If 404 or 400, print error cleanly
+            if response.status_code != 200:
+                print(json.dumps({
+                    "results": [], 
+                    "error": f"Solr returned {response.status_code}: {response.text[:200]}"
+                }))
+                return
 
-        if args.output:
-            with open(args.output, "w") as out:
-                out.write(json.dumps(result))
-        else:
+            solr_json = response.json()
+            result = convert_solr_to_ui(solr_json)
             print(json.dumps(result))
+
+        except Exception as e:
+            # Catch connection crashes
+            print(json.dumps({"results": [], "error": str(e)}))
 
         return
 
-    # --- JSON file mode (not used in your UI) ---
-    if not args.queries:
-        print("Either --q or --queries must be provided.")
-        return
-
-    # Loop through query files if needed
-    for file_name in os.listdir(args.queries):
-        if not file_name.endswith(".json"):
-            continue
-
-        file_path = os.path.join(args.queries, file_name)
-        solr_json = run_query(file_path, args.uri, args.collection)
-        result = convert_solr_to_ui(solr_json)
-
-        if args.output:
-            out_path = os.path.join(args.output, file_name.replace(".json", "_results.json"))
-            with open(out_path, "w") as out:
-                out.write(json.dumps(result))
-        else:
-            print(json.dumps(result))
-
+    # --- File mode (Legacy) ---
+    if args.queries:
+        for file_name in os.listdir(args.queries):
+            if not file_name.endswith(".json"): continue
+            file_path = os.path.join(args.queries, file_name)
+            solr_json = run_query(file_path, args.uri, args.collection)
+            result = convert_solr_to_ui(solr_json)
+            if args.output:
+                with open(os.path.join(args.output, file_name.replace(".json", "_results.json")), "w") as out:
+                    out.write(json.dumps(result))
+            else:
+                print(json.dumps(result))
 
 if __name__ == "__main__":
     main()
