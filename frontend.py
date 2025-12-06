@@ -1,114 +1,61 @@
-import streamlit as st
-import pandas as pd
-import json
-import subprocess
-import os
+from flask import Flask, render_template, request
+import pysolr
 
-st.set_page_config(page_title="Search UI", layout="wide")
+# Initialize the Flask app
+app = Flask(__name__)
 
+# Connect to Solr (assuming Solr is running locally on port 8983 and the core is named 'mycore')
+solr = pysolr.Solr('http://localhost:8983/solr/mycore', always_commit=True)
 
-st.title("Search System Interface")
-
-
-#  SIDEBAR OPTIONS
-st.sidebar.header("⚙️ Opções")
-
-show_snippets = st.sidebar.checkbox("Gerar snippets", True)
-show_clusters = st.sidebar.checkbox("Mostrar clusters", True)
-
-max_results = st.sidebar.slider("Maximum number of results:", 1, 100, 10)
-
-
-query = st.text_input("Write your query:", "")
-
-search_button = st.button("Search")
-
-
-def run_query(query_text, max_results=10):
-    script_path = os.path.join("scripts", "query_solr.py")
-
+def search_solr(query):
+    """
+    Executes a search query against Solr and returns the results.
+    """
     try:
-        process = subprocess.run(
-            [
-                "python3", script_path,
-                "--q", query_text,
-                "--limit", str(max_results),
-                "--uri", "http://localhost:8983/solr",
-                "--collection", "courses"
-            ],
-            capture_output=True,
-            text=True
-        )
-        
-        if process.returncode != 0:
-            st.error(f"Script Error: {process.stderr}")
-            return None
-
-        return json.loads(process.stdout)
-
+        # Perform the query on Solr
+        results = solr.search(query)
+        return results
     except Exception as e:
-        st.error(f"Error running search script: {e}")
-        return None
+        print(f"Error executing query: {e}")
+        return []
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    """
+    Handles the main page where users input their queries and view results.
+    """
+    results = []
+    query = ''
+    
+    if request.method == 'POST':
+        # Get the query entered by the user
+        query = request.form['query']
+        
+        # Perform the Solr search
+        results = search_solr(query)
+    
+    return render_template('index.html', query=query, results=results)
+
+@app.route('/book/<book_id>')
+def book_details(book_id):
+    try:
+        results = solr.search(f"id:{book_id}")
+
+        docs = list(results)
+        print(f"Solr query results: {docs}")
+
+        if docs:
+            book = docs[0]  # first document
+            return render_template('book_details.html', book=book)
+        else:
+            return "Book not found", 404
+    except Exception as e:
+        print(f"Error: {e}")
+        return f"Error fetching book details: {e}", 500
 
 
-def generate_snippet(text, query):
-    text_lower = text.lower()
-    query_lower = query.lower()
-    pos = text_lower.find(query_lower)
-
-    if pos == -1:
-        return text[:200] + "..."
-
-    start = max(0, pos - 50)
-    end = min(len(text), pos + 50)
-    snippet = text[start:end].replace(query, f"**{query}**")
-    return snippet + "..."
 
 
-def cluster_results(results):
-    clusters = {}
-    for res in results:
-        key = res["title"][0].upper()
-        clusters.setdefault(key, []).append(res)
-    return clusters
 
-
-#  SEARCH ACTION
-if search_button and query.strip() != "":
-    with st.spinner("Searching..."):
-        data = run_query(query, max_results=max_results)
-
-    if data is None:
-        st.stop()
-
-    results = data.get("results", [])
-
-    st.subheader(f"Results ({len(results)})")
-
-    if show_clusters:
-        clusters = cluster_results(results)
-
-        for cluster_name, items in clusters.items():
-            with st.expander(f"Cluster {cluster_name} ({len(items)})"):
-                for r in items:
-                    st.markdown(f"### {r.get('title','Sem título')}")
-
-                    if show_snippets:
-                        snippet = generate_snippet(r.get("content",""), query)
-                        st.markdown(snippet)
-
-                    st.markdown("---")
-
-    else:
-        for r in results:
-            st.markdown(f"### {r.get('title','Sem título')}")
-
-            if show_snippets:
-                snippet = generate_snippet(r.get("content",""), query)
-                st.markdown(snippet)
-
-            st.markdown("---")
-
-else:
-    st.info("Write a query above and click 'Search'.")
-
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=8080)
