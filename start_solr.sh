@@ -13,7 +13,7 @@ if [ "$(docker ps -aq -f name=^${CONTAINER_NAME}$)" ]; then
   docker rm -f $CONTAINER_NAME > /dev/null 2>&1
 fi
 
-docker run -d --name $CONTAINER_NAME -p $SOLR_PORT:8983 -v ${PWD}:/data solr:9 solr-precreate $CORE_NAME > /dev/null
+docker run -d --name $CONTAINER_NAME -p $SOLR_PORT:8983 -v "${PWD}:/data" solr:9 solr-precreate $CORE_NAME > /dev/null
 
 echo "A aguardar que o Solr arranque..."
 sleep 10
@@ -39,3 +39,19 @@ else
 fi
 
 echo "Interface Solr disponível em: http://localhost:${SOLR_PORT}"
+
+echo "A iniciar o frontend Flask em http://localhost:8080 ..."
+
+# criar venv opcionalmente
+if [ ! -d "venv" ]; then
+  python3 -m venv venv
+fi
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+export FLASK_APP=frontend.py          
+export FLASK_ENV=development
+
+flask run --host=0.0.0.0 --port=8080
