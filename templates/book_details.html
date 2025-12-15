@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel-bg: #020617;
+            --panel-border: rgba(148, 163, 184, 0.35);
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.18);
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-shell {
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 24px 16px 32px;
+            flex: 1;
+        }
+
+        header {
+            margin-bottom: 18px;
+        }
+
+        header h1 {
+            margin: 0 0 6px;
+            font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            background: linear-gradient(120deg, #38bdf8, #a855f7, #f97316);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .book-detail {
+            margin-top: 6px;
+            border-radius: 22px;
+            padding: 22px;
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.06), transparent 65%),
+                linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--panel-border);
+            box-shadow:
+                0 24px 60px rgba(15, 23, 42, 0.96),
+                0 0 0 1px rgba(15, 23, 42, 1);
+            display: grid;
+            grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .cover-frame {
+            border-radius: 18px;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #111827, #020617);
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            box-shadow:
+                0 20px 45px rgba(15, 23, 42, 0.95),
+                0 0 0 1px rgba(15, 23, 42, 1);
+            max-height: 420px;
+        }
+
+        .cover-frame img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .book-main h2 {
+            margin: 0 0 6px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f9fafb;
+        }
+
+        .book-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .book-meta-label {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.76rem;
+            color: rgba(148, 163, 184, 0.9);
+        }
+
+        .rating-pill {
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            background: var(--accent-soft);
+            color: #e0f2fe;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        .detail-list {
+            list-style: none;
+            margin: 10px 0 12px;
+            padding: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .detail-list li + li {
+            margin-top: 4px;
+        }
+
+        .detail-list strong {
+            color: #e5e7eb;
+            font-weight: 500;
+        }
+
+        .price-highlight {
+            font-weight: 500;
+            color: #facc15;
+        }
+
+        .description {
+            margin-top: 6px;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: rgba(209, 213, 219, 0.96);
+        }
+
+        .back-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 22px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 75%);
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: background 0.15s ease-out, transform 0.1s ease-out, box-shadow 0.15s ease-out;
+        }
+
+        .back-button span {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .back-button:hover {
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.24), transparent 75%);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.95);
+            transform: translateY(-1px);
+        }
+
+        footer {
+            border-top: 1px solid rgba(55, 65, 81, 0.8);
+            padding: 10px 16px 18px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), #020617);
+        }
+
+        @media (max-width: 768px) {
+            .book-detail {
+                grid-template-columns: minmax(0, 1fr);
+                padding: 18px;
+            }
+
+            .cover-frame {
+                max-width: 280px;
+                max-height: 380px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-shell">
+    <header>
+        <h1>Book Details</h1>
+        <p>Dive deeper into a title from your Solr search.</p>
+    </header>
+
+    <section class="book-detail">
+        {% if book.get('covering') %}
+            <figure class="cover-frame">
+                <img src="{{ book['covering'][0] }}" alt="Book Cover">
+            </figure>
+        {% endif %}
+
+        <div class="book-main">
+            <h2>{{ book.get('title', 'No title') }}</h2>
+
+            <div class="book-meta-row">
+                <span class="book-meta-label">Author</span>
+                <span>{{ book.get('author', 'Unknown') }}</span>
+
+                <span class="rating-pill">
+                    ⭐ {{ book.get('rating', 'N/A') }} / 5
+                </span>
+            </div>
+
+            <ul class="detail-list">
+                <li><strong>ISBN:</strong> {{ book.get('isbn', 'N/A') }}</li>
+                <li class="price-highlight">
+                    <strong>Price:</strong>
+                    {% if book.get('price') != None %}
+                        ${{ book.get('price') }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </li>
+                <li>
+                    <strong>Genres:</strong>
+                    {% if book.get('genres') %}
+                        {{ book.get('genres') | join(', ') }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </li>
+            </ul>
+
+            <p class="description">
+                {{ book.get('description', 'No description available.') }}
+            </p>
+        </div>
+    </section>
+
+    <div class="back-row">
+        <span>← Return to refine your search or browse more books.</span>
+        <a href="{{ url_for('home') }}" class="back-button">
+            <span>←</span>
+            Back to Search
+        </a>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Solr Query Interface. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

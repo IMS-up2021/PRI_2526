@@ -1,0 +1,17 @@
+[
+  {
+    "id": "1",
+    "title": "Introduction to Python",
+    "content": "Learn the basics of Python programming."
+  },
+  {
+    "id": "2",
+    "title": "Advanced Machine Learning",
+    "content": "Deep dive into neural networks and modern ML techniques."
+  },
+  {
+    "id": "3",
+    "title": "Fantasy Literature",
+    "content": "A study of modern fantasy novels including magic, adventure, and world-building."
+  }
+]
